@@ -71,6 +71,7 @@ class Stopwatch extends React.Component {
 		this.stop();
 		this.reset();
 		this.print();
+		this.clearArray();
 
 	}
 
@@ -95,7 +96,7 @@ class Stopwatch extends React.Component {
                     <a href='#' className='button' onClick={this.start.bind(this)}>Start</a>
                     <a href='#' className='button' onClick={this.stop.bind(this)}>Stop</a>
                     <a href='#' className='button' onClick={this.reset.bind(this)}>Reset</a>
-                    <a href='#' className='button' onClick={this.clearArray.bind(this)}>Clear Array</a>
+                    <a href='#' className='button' onClick={this.stopres.bind(this)}>Clear Array</a>
                 </div>
                 <div>{this.format(this.state.times)}</div>
                 <ul className="results">
