@@ -2,49 +2,46 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var timeArray = [];
+
 var Stopwatch = function (_React$Component) {
 	_inherits(Stopwatch, _React$Component);
 
-	function Stopwatch(display) {
+	function Stopwatch(props) {
 		_classCallCheck(this, Stopwatch);
 
-		var _this = _possibleConstructorReturn(this, (Stopwatch.__proto__ || Object.getPrototypeOf(Stopwatch)).call(this, display));
+		var _this = _possibleConstructorReturn(this, (Stopwatch.__proto__ || Object.getPrototypeOf(Stopwatch)).call(this, props));
 
 		_this.state = {
 			running: false,
-			display: display,
+			timeArray: [],
 			times: {
 				minutes: 0,
 				seconds: 0,
 				milliseconds: 0
 			}
 		};
-		_this.print();
 		return _this;
 	}
 
 	_createClass(Stopwatch, [{
 		key: 'reset',
 		value: function reset() {
-			this.setState({
-				times: {
-					minutes: 0,
-					seconds: 0,
-					miliseconds: 0
-				}
-			});
-			this.print();
+			this.state.running = false;
+			clearInterval(this.watch);
 		}
 	}, {
 		key: 'print',
 		value: function print() {
-			this.display.innerText = this.format(this.times);
+			console.log(this.format(this));
 		}
 	}, {
 		key: 'format',
@@ -86,27 +83,27 @@ var Stopwatch = function (_React$Component) {
 	}, {
 		key: 'stop',
 		value: function stop() {
-			if (this.state.running) {
-				this.setState({
-					running: false
-				});
-				clearInterval(this.watch);
-			}
+			this.state.running = false;
+			clearInterval(this.watch);
 		}
 	}, {
-		key: 'stopres',
-		value: function stopres() {
-			this.stop();
-			this.reset();
-			this.print();
-			this.clearArray();
+		key: 'addTo',
+		value: function addTo() {
+			console.log(this.format(this.times));
+			timeArray = [].concat(_toConsumableArray(timeArray), [this.format(this.times)]);
+			console.log(timeArray);
 		}
 	}, {
 		key: 'clearArray',
 		value: function clearArray() {
-			this.setState({
-				timeArray: []
-			});
+			timeArray = [];
+			console.log(timeArray);
+		}
+	}, {
+		key: 'results',
+		value: function results() {
+			timeArray = [];
+			console.log(timeArray);
 		}
 	}, {
 		key: 'pad0',
@@ -125,53 +122,45 @@ var Stopwatch = function (_React$Component) {
 				null,
 				React.createElement(
 					'div',
-					{ className: 'controls' },
+					{ className: '.controls' },
 					React.createElement(
 						'a',
 						{ href: '#', className: 'button', onClick: this.start.bind(this) },
-						'Start'
+						'Start '
 					),
 					React.createElement(
 						'a',
 						{ href: '#', className: 'button', onClick: this.stop.bind(this) },
-						'Stop'
+						'Stop '
 					),
 					React.createElement(
 						'a',
 						{ href: '#', className: 'button', onClick: this.reset.bind(this) },
-						'Reset'
+						'Reset '
 					),
 					React.createElement(
 						'a',
-						{ href: '#', className: 'button', onClick: this.stopres.bind(this) },
-						'Clear Array'
+						{ href: '#', className: 'button', onClick: this.addTo.bind(this) },
+						'Add '
+					),
+					React.createElement(
+						'a',
+						{ href: '#', className: 'button', onClick: this.clearArray.bind(this) },
+						'Clear-list '
 					)
 				),
 				React.createElement(
 					'div',
 					null,
-					this.format(this.state.times)
+					this.format()
 				),
-				React.createElement(
-					'ul',
-					{ className: 'results' },
-					this.state.timeArray.map(function (item) {
-						return React.createElement(
-							'li',
-							{ key: item },
-							item
-						);
-					})
-				),
-				';'
+				React.createElement('ul', { className: '.results' })
 			);
 		}
 	}]);
 
 	return Stopwatch;
 }(React.Component);
-
-var timeArray = [];
 
 ReactDOM.render(React.createElement(Stopwatch, null), document.querySelector('.stopwatch'));
 

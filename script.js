@@ -1,36 +1,30 @@
+let timeArray = [];
 class Stopwatch extends React.Component {
-	constructor(display) {
-		super(display);
+	constructor(props) {
+		super(props);
 		this.state = {
 			running: false,
-			display: display,
+			timeArray: [],
             times: {
                 minutes: 0,
                 seconds: 0,
                 milliseconds: 0
             }
 		}
-		this.print();
 	}
 
 	reset() {
-		this.setState({
-			times: {
-				minutes: 0,
-				seconds: 0,
-				miliseconds: 0
-			}
-		});
-		this.print()
+		this.state.running = false;
+        clearInterval(this.watch);
 	}
 
 	print() {
-		this.display.innerText = this.format(this.times);
+		console.log(this.format(this));
 	}
 
- format(times) {
-    return `${this.pad0(this.state.times.minutes)}:${this.pad0(this.state.times.seconds)}:${this.pad0(Math.floor(this.state.times.miliseconds))}`;
-  }
+ 	format(times) {
+    	return `${this.pad0(this.state.times.minutes)}:${this.pad0(this.state.times.seconds)}:${this.pad0(Math.floor(this.state.times.miliseconds))}`;
+  	}
 
     start() {
         if (!this.state.running) {
@@ -58,26 +52,25 @@ class Stopwatch extends React.Component {
   	}
 
     stop() {
-        if (this.state.running) {
-            this.setState({
-                running: false
-            });
-            clearInterval(this.watch);
-        }
+		this.state.running = false;
+        clearInterval(this.watch);
     }
 
-	stopres() {
-		this.stop();
-		this.reset();
-		this.print();
-		this.clearArray();
+	addTo() {
+	    console.log(this.format(this.times));
+	    timeArray = [...timeArray, this.format(this.times)];
+	    console.log(timeArray);
+	  }
 
-	}
 
 	clearArray() {
-		this.setState({
-            timeArray: []
-        });
+		timeArray = [];
+		console.log(timeArray);
+	}
+
+	results() {
+		timeArray = [];
+		console.log(timeArray);
 	}
 
 	pad0(value) {
@@ -91,23 +84,22 @@ class Stopwatch extends React.Component {
 	render() {
         return (
             <div>
-                <div className='controls'>
-                    <a href='#' className='button' onClick={this.start.bind(this)}>Start</a>
-                    <a href='#' className='button' onClick={this.stop.bind(this)}>Stop</a>
-                    <a href='#' className='button' onClick={this.reset.bind(this)}>Reset</a>
-                    <a href='#' className='button' onClick={this.stopres.bind(this)}>Clear Array</a>
+                <div className='.controls'>
+                    <a href='#' className='button' onClick={this.start.bind(this)}>Start </a>
+                    <a href='#' className='button' onClick={this.stop.bind(this)}>Stop </a>
+                    <a href='#' className='button' onClick={this.reset.bind(this)}>Reset </a>
+                    <a href='#' className='button' onClick={this.addTo.bind(this)}>Add </a>
+                    <a href='#' className='button' onClick={this.clearArray.bind(this)}>Clear-list </a>
                 </div>
-                <div>{this.format(this.state.times)}</div>
-                <ul className="results">
-                    {this.state.timeArray.map(item => <li key={item}>{item}</li>)}
-                </ul>;
+                <div>{this.format()}</div>
+                <ul className=".results"></ul>
             </div>
         );
     }
 
 }
 
-let timeArray = [];
+
 
 ReactDOM.render(<Stopwatch/>, document.querySelector('.stopwatch'));
 
