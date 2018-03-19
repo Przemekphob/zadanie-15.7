@@ -1,16 +1,16 @@
 class Stopwatch extends React.Component {
-	constructor(props) {
-		super(props);
+	constructor(display) {
+		super(display);
 		this.state = {
 			running: false,
 			display: display,
-			timeArray: [],
             times: {
                 minutes: 0,
                 seconds: 0,
                 milliseconds: 0
             }
 		}
+		this.print();
 	}
 
 	reset() {
@@ -21,21 +21,20 @@ class Stopwatch extends React.Component {
 				miliseconds: 0
 			}
 		});
+		this.print()
 	}
 
 	print() {
 		this.display.innerText = this.format(this.times);
 	}
 
-	format(times) {
-    	return `${this.pad0(times.minutes)}:${this.pad0(times.seconds)}:${this.pad0(Math.floor(times.miliseconds))}`;
-	}
+ format(times) {
+    return `${this.pad0(this.state.times.minutes)}:${this.pad0(this.state.times.seconds)}:${this.pad0(Math.floor(this.state.times.miliseconds))}`;
+  }
 
     start() {
         if (!this.state.running) {
-            this.setState({
-                running: true
-            });
+            this.state.running = true;
             this.watch = setInterval(() => this.step(), 10);
         }
     }
@@ -46,17 +45,17 @@ class Stopwatch extends React.Component {
 	    this.print();
 	}
 
-	calculate() {
-	    this.times.miliseconds += 1;
-	    if (this.times.miliseconds >= 100) {
-	        this.times.seconds += 1;
-	        this.times.miliseconds = 0;
+  	calculate() {
+	    this.state.times.miliseconds += 1;
+	    if (this.state.times.miliseconds >= 100) {
+	      	this.state.times.seconds += 1;
+	      	this.state.times.miliseconds = 0;
 	    }
-	    if (this.times.seconds >= 60) {
-	        this.times.minutes += 1;
-	        this.times.seconds = 0;
+	    if (this.state.times.seconds >= 60) {
+	      	this.state.times.minutes += 1;
+	      	this.state.times.seconds = 0;
 	    }
-	}
+  	}
 
     stop() {
         if (this.state.running) {
@@ -108,8 +107,9 @@ class Stopwatch extends React.Component {
 
 }
 
+let timeArray = [];
 
-ReactDOM.render(<Stopwatch/>, document.querySelector('.stopwatch'))
+ReactDOM.render(<Stopwatch/>, document.querySelector('.stopwatch'));
 
 
 /*
