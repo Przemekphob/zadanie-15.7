@@ -1,85 +1,97 @@
-let timeArray = [];
+function pad0(value) {
+    let result = value.toString();
+    if (result.length < 2) {
+        result = '0' + result;
+    }
+    return result;
+}
+
 class Stopwatch extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			running: false,
-			timeArray: [],
+    constructor() {
+        super();
+        this.state = {
+            running: false,
             times: {
                 minutes: 0,
                 seconds: 0,
-                milliseconds: 0
-            }
-		}
-	}
-
-	reset() {
-		this.state.running = false;
-        clearInterval(this.watch);
-	}
-
-	print() {
-		console.log(this.format(this));
-	}
-
- 	format(times) {
-    	return `${this.pad0(this.state.times.minutes)}:${this.pad0(this.state.times.seconds)}:${this.pad0(Math.floor(this.state.times.miliseconds))}`;
-  	}
-
-    start() {
-        if (!this.state.running) {
-            this.state.running = true;
-            this.watch = setInterval(() => this.step(), 10);
+                miliseconds: 0
+            },
+            watch: null,
+            resultsArray: []
         }
     }
 
-	step() {
-	    if (!this.state.running) return;
-	    this.calculate();
-	    this.print();
-	}
+    reset() {
+        this.setState({
+            times: {
+                minutes: 0,
+                seconds: 0,
+                miliseconds: 0
+            }
+        })
+        this.clearArray();
 
-  	calculate() {
-	    this.state.times.miliseconds += 1;
-	    if (this.state.times.miliseconds >= 100) {
-	      	this.state.times.seconds += 1;
-	      	this.state.times.miliseconds = 0;
-	    }
-	    if (this.state.times.seconds >= 60) {
-	      	this.state.times.minutes += 1;
-	      	this.state.times.seconds = 0;
-	    }
-  	}
+    }
+
+
+    format(times) {
+        return `${pad0(times.minutes)}:${pad0(times.seconds)}:${pad0(Math.floor(times.miliseconds))}`;
+    }
+
+    start() {
+        if (!this.state.running) {
+            this.setState({
+                running: true,
+                watch: setInterval(() => this.step(), 10)
+            })
+        }
+    }
+
+    step() {
+        let miliseconds = this.state.times.miliseconds;
+        let seconds = this.state.times.seconds;
+        let minutes = this.state.times.minutes;
+
+        miliseconds++;
+        if (miliseconds >= 100) {
+            seconds++;
+            miliseconds = 0;
+        }
+
+        if (seconds >= 60) {
+            minutes++;
+            seconds = 0;
+        }
+
+        this.setState({
+            times: {
+                miliseconds,
+                seconds,
+                minutes
+            }
+        })
+    }
 
     stop() {
-		this.state.running = false;
-        clearInterval(this.watch);
+        clearInterval(this.state.watch);
+        this.setState({
+            running: false,
+            watch: null
+        });
     }
 
 	addTo() {
-	    console.log(this.format(this.times));
-	    timeArray = [...timeArray, this.format(this.times)];
-	    console.log(timeArray);
+        this.setState({
+            resultsArray: []
+        })
 	  }
 
 
-	clearArray() {
-		timeArray = [];
-		console.log(timeArray);
-	}
-
-	results() {
-		timeArray = [];
-		console.log(timeArray);
-	}
-
-	pad0(value) {
-	    let result = value.toString();
-	    if (result.length < 2) {
-	        result = '0' + result;
-	    }
-	    return result;
-	}
+    clearArray() {
+        this.setState({
+            resultsArray: []
+        })
+    }
 
 	render() {
         return (
@@ -91,8 +103,7 @@ class Stopwatch extends React.Component {
                     <a href='#' className='button' onClick={this.addTo.bind(this)}>Add </a>
                     <a href='#' className='button' onClick={this.clearArray.bind(this)}>Clear-list </a>
                 </div>
-                <div>{this.format()}</div>
-                <ul className=".results"></ul>
+                <div>{this.format(this.state.times)}</div>
             </div>
         );
     }
@@ -102,99 +113,3 @@ class Stopwatch extends React.Component {
 
 
 ReactDOM.render(<Stopwatch/>, document.querySelector('.stopwatch'));
-
-
-/*
-class Stopwatch {
-	constructor(display) {
-		this.running = false;
-		this.display = display;
-		this.reset();
-		this.print(this.times);
-	}
-
-	reset() {
-		this.times = {
-			minutes: 0,
-			seconds: 0,
-			miliseconds: 0
-		};
-	}
-
-	print() {
-		this.display.innerText = this.format(this.times);
-	}
-
-	format(times) {
-    	return `${pad0(times.minutes)}:${pad0(times.seconds)}:${pad0(Math.floor(times.miliseconds))}`;
-	}
-
-	start() {
-	    if (!this.running) {
-	        this.running = true;
-	        this.watch = setInterval(() => this.step(), 10);
-	    }
-	}
-
-	step() {
-	    if (!this.running) return;
-	    this.calculate();
-	    this.print();
-	}
-
-	calculate() {
-	    this.times.miliseconds += 1;
-	    if (this.times.miliseconds >= 100) {
-	        this.times.seconds += 1;
-	        this.times.miliseconds = 0;
-	    }
-	    if (this.times.seconds >= 60) {
-	        this.times.minutes += 1;
-	        this.times.seconds = 0;
-	    }
-	}
-
-	stop() {
-	    this.running = false;
-	    clearInterval(this.watch);
-	    timeArray.push(this.format(this.times));
-		console.log(timeArray);
-	}
-
-	stopres() {
-		this.stop();
-		this.reset();
-		this.print();
-
-	}
-}
-
-
-function pad0(value) {
-    let result = value.toString();
-    if (result.length < 2) {
-        result = '0' + result;
-    }
-    return result;
-}
-
-let timeArray = [];
-
-let startButton = document.getElementById('start');
-startButton.addEventListener('click', () => stopwatch.start());
-
-let stopButton = document.getElementById('stop');
-stopButton.addEventListener('click', () => stopwatch.stop());
-
-let resetButton = document.getElementById('reset');
-resetButton.addEventListener('click', () => stopwatch.stopres());
-
-let resetArray = document.getElementById('arrayres');
-resetArray.addEventListener('click', 
-	function clearArray() {
-  		return console.log(timeArray = [])
-	} , false);
-
-const stopwatch = new Stopwatch(
-	document.querySelector('.stopwatch'));
-*/
